@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الجميلات - ثياب سودانية أصيلة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        /* Header عملاق مع خلفية صورة */
+        header {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.pexels.com/photos/5339793/pexels-photo-5339793.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080') center/cover no-repeat;
+            padding: 4rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+            color: white;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d63384;
+            text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #d63384;
+        }
+        /* Sidebar آلية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+        .sidebar.active {
+            right: 0;
+        }
+        .sidebar-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #d63384;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2rem;
+        }
+        .sidebar h3 {
+            padding: 0 1rem 1rem;
+            color: #d63384;
+            border-bottom: 1px solid #eee;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar li {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .sidebar li:hover {
+            background: #f8f9fa;
+        }
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            main {
+                grid-template-columns: 250px 1fr;
+                gap: 2rem;
+                margin-right: 250px;
+            }
+            .sidebar {
+                right: -250px;
+                width: 250px;
+            }
+            .sidebar.active {
+                right: -250px;
+            }
+        }
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .see-all {
+            color: #d63384;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            border: 1px solid #f0f0f0;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .product-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .featured-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #00c853;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+        .hanger-icon {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 1.2rem;
+            color: #666;
+            z-index: 2;
+        }
+        .heart-icon {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 2;
+        }
+        .heart-icon:hover {
+            background: rgba(255,255,255,1);
+        }
+        .heart-icon.liked i {
+            color: #e74c3c;
+        }
+        .product-info {
+            padding: 1rem;
+        }
+        .product-price {
+            font-size: 1.3rem;
+            color: #d63384;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .location {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .location i {
+            color: #00c853;
+            font-size: 0.9rem;
+        }
+        .date {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .cart-btn {
+            background: #d63384;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .cart-btn:hover {
+            background: #c2185b;
+        }
+        /* Footer شريط سفلي شفاف مع أيقونات */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: color 0.3s;
+        }
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        .nav-item.active {
+            color: #d63384;
+        }
+        .nav-item:hover {
+            color: #d63384;
+        }
+        /* Social Footer */
+        .social-footer {
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 99;
+            display: none; /* مخفي افتراضياً، يمكن تفعيله */
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .social-icons a {
+            color: #d63384;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .social-icons a:hover {
+            color: #c2185b;
+        }
+        /* Infinite Scroll Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #999;
+        }
+        /* Responsive */
+        @media (max-width: 767px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            main {
+                margin-right: 0;
+                padding: 0 0.5rem;
+            }
+            .sidebar.active {
+                right: 0;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 0.8rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none; /* إخفاء في الديسكتوب */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">متجر الجميلات</a>
+            <nav>
+                <ul>
+                    <li><a href="#">الرئيسية</a></li>
+                    <li><a href="#">عن المتجر</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sidebar Toggle -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <h3>أنواع الثياب</h3>
+        <ul>
+            <li>جلابيات تقليدية</li>
+            <li>توبات سودانية</li>
+            <li>فساتين عصرية</li>
+            <li>شالات وإكسسوارات</li>
+        </ul>
+        <h3 style="margin-top: 2rem; padding: 0 1rem 1rem; color: #d63384; border-bottom: 1px solid #eee;">منتجات أخرى</h3>
+        <ul>
+            <li>عروض خاصة</li>
+            <li>منتجات جديدة</li>
+            <li>أكثر مبيعاً</li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main>
+        <div class="section-title">
+            <h2>أفضل الثياب السودانية</h2>
+            <a href="#" class="see-all">عرض الكل</a>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- المنتجات ستُضاف هنا ديناميكياً -->
+        </div>
+        <div class="loading" id="loading">جاري تحميل المزيد...</div>
+    </main>
+
+    <!-- Social Footer -->
+    <footer class="social-footer">
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-comments"></i>
+            <span>الدردشة</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-plus"></i>
+            <span>إعلاني</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>الملف الشخصي</span>
+        </a>
+    </nav>
+
+    <script>
+        // بيانات المنتجات مع تفاصيل إضافية (موقع، تاريخ، صور)
+        const productsData = [
+            { 
+                id: 1, 
+                title: 'جلابية سودانية تقليدية', 
+                price: '150 ريال', 
+                location: 'الخرطوم، السودان',
+                date: 'منذ شهر',
+                images: ['https://images.pexels.com/photos/5339793/pexels-photo-5339793.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'],
+                featured: true
+            },
+            { 
+                id: 2, 
+                title: 'توب سوداني مزخرف', 
+                price: '80 ريال', 
+                location: 'الخرطوم، السودان',
+                date: 'منذ أسبوع',
+                images: ['https://images.pexels.com/photos/33401857/pexels-photo-33401857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'],
+                featured: true
+            },
+            { 
+                id: 3, 
+                title: 'فستان سوداني عصري', 
+                price: '200 ريال', 
+                location: 'بورتسودان، السودان',
+                date: 'منذ 11 شهر',
+                images: ['https://images.pexels.com/photos/18043610/pexels-photo-18043610.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'],
+                featured: true
+            },
+            { 
+                id: 4, 
+                title: 'شال سوداني ملون', 
+                price: '50 ريال', 
+                location: 'الخرطوم، السودان',
+                date: 'منذ شهر',
+                images: ['https://images.pexels.com/photos/12448257/pexels-photo-12448257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'],
+                featured: false
+            }
+        ];
+
+        let allProducts = [...productsData];
+        let currentIndex = 4;
+
+        // إضافة المزيد من المنتجات
+        function generateMoreProducts(count) {
+            const moreProducts = [];
+            const locations = ['الخرطوم، السودان', 'بورتسودان، السودان', 'أم درمان، السودان'];
+            const dates = ['منذ أسبوع', 'منذ شهر', 'منذ 3 أشهر', 'منذ سنة'];
+            const imageIds = [5339793, 33401857, 30404607, 18043610, 6155584, 12448257];
+            for (let i = 0; i < count; i++) {
+                const randomImg = `https://images.pexels.com/photos/${imageIds[Math.floor(Math.random() * imageIds.length)]}/pexels-photo-${imageIds[Math.floor(Math.random() * imageIds.length)]}.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1`;
+                moreProducts.push({
+                    id: currentIndex++,
+                    title: `ثوب سوداني ${currentIndex}`,
+                    price: `${Math.floor(Math.random() * 200 + 50)} ريال`,
+                    location: locations[Math.floor(Math.random() * locations.length)],
+                    date: dates[Math.floor(Math.random() * dates.length)],
+                    images: [randomImg],
+                    featured: Math.random() > 0.5
+                });
+            }
+            return moreProducts;
+        }
+
+        // عرض المنتجات
+        function renderProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.images[0]}" alt="${product.title}">
+                        ${product.featured ? '<span class="featured-tag">مميز</span>' : ''}
+                        <div class="hanger-icon"><i class="fas fa-hanger"></i></div>
+                        <div class="heart-icon" onclick="toggleLike(this, ${product.id})">
+                            <i class="far fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-title">${product.title}</div>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${product.location}
+                        </div>
+                        <div class="date">${product.date}</div>
+                        <div class="product-actions">
+                            <button class="cart-btn" onclick="addToCart(${product.id})">إضافة للسلة</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // تبديل الإعجاب
+        function toggleLike(heart, id) {
+            heart.classList.toggle('liked');
+            const icon = heart.querySelector('i');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+        }
+
+        // إضافة للسلة
+        function addToCart(id) {
+            alert('تم إضافة المنتج إلى السلة!');
+        }
+
+        // Infinite Scroll
+        let loading = false;
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 && !loading) {
+                loading = true;
+                document.getElementById('loading').style.display = 'block';
+                setTimeout(() => {
+                    const more = generateMoreProducts(4);
+                    allProducts.push(...more);
+                    renderProducts(more);
+                    document.getElementById('loading').style.display = 'none';
+                    loading = false;
+                }, 1500);
+            }
+        });
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // تحميل المنتجات الأولية
+        renderProducts(productsData);
+        document.getElementById('loading').style.display = 'none';
+    </script>
+</body>
+</html>
